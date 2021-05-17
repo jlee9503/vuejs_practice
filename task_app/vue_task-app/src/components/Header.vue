@@ -1,7 +1,7 @@
 <template>
 	<header>
 		<h1>{{ title }}</h1>
-		<Button text="Add Task" />
+		<Button text="Add Task" color="steelblue" />
 	</header>
 </template>
 
@@ -25,5 +25,6 @@ header {
 	justify-content: space-between;
 	align-items: center;
 	padding: 10px 20px;
+	margin-bottom: 40px;
 }
 </style>
