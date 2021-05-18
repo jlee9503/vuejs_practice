@@ -1,5 +1,5 @@
 <template>
-	<div :key="task.id" v-for="task in tasks">
+	<div :key="task.id" v-for="task in tasks" class="tasks-container">
 		<Task
 			@delete-task="$emit('delete-task', task.id)"
 			@toggleReminder="$emit('toggleReminder', task.id)"
@@ -22,3 +22,9 @@ export default {
 	emits: ["delete-task", "toggleReminder"],
 };
 </script>
+
+<style scoped>
+.tasks-container:last-child {
+	margin-bottom: 20px;
+}
+</style>

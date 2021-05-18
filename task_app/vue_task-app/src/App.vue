@@ -1,6 +1,13 @@
 <template>
 	<div class="container">
-		<Header title="Task Trakcer" />
+		<Header
+			title="Task Trakcer"
+			@toggle-add-new-task="toggleAddNewTask"
+			:showAddTask="showAddTask"
+		/>
+		<div v-show="showAddTask">
+			<AddNewTask @add-newtask="addNewTask" />
+		</div>
 		<Tasks
 			@delete-task="deleteTask"
 			@toggleReminder="toggleReminder"
@@ -12,19 +19,28 @@
 <script>
 import Header from "./components/Header";
 import Tasks from "./components/Tasks";
+import AddNewTask from "./components/AddNewTask";
 
 export default {
 	name: "App",
 	components: {
 		Header,
 		Tasks,
+		AddNewTask,
 	},
 	data() {
 		return {
 			tasks: [],
+			showAddTask: false,
 		};
 	},
 	methods: {
+		toggleAddNewTask() {
+			this.showAddTask = !this.showAddTask;
+		},
+		addNewTask(task) {
+			this.tasks = [...this.tasks, task];
+		},
 		deleteTask(id) {
 			this.tasks = this.tasks.filter((task) => task.id !== id);
 		},
@@ -83,12 +99,12 @@ body {
 	border-radius: 10px;
 	box-shadow: 10px 10px 5px #1087be, -10px -10px 5px #1087be;
 	margin: 40px auto;
-	max-width: 600px;
-	min-height: 800px;
+	max-width: 400px;
+	min-height: 650px;
 }
 
 .btn {
-	padding: 15px 20px;
+	padding: 12px 20px;
 	background: #575353ec;
 	color: #fff;
 	border-radius: 5px;
