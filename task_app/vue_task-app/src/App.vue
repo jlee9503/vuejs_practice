@@ -38,45 +38,70 @@ export default {
 		toggleAddNewTask() {
 			this.showAddTask = !this.showAddTask;
 		},
-		addNewTask(task) {
-			this.tasks = [...this.tasks, task];
+
+		// POST
+		async addNewTask(task) {
+			const res = await fetch(`api/tasks`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(task),
+			});
+
+			const data = await res.json();
+			this.tasks = [...this.tasks, data];
 		},
-		deleteTask(id) {
-			this.tasks = this.tasks.filter((task) => task.id !== id);
+
+		// DELETE
+		async deleteTask(id) {
+			try {
+				const res = await fetch(`api/tasks/${id}`, {
+					method: "DELETE",
+				});
+				this.tasks = this.tasks.filter((task) => task.id !== id);
+			} catch (err) {
+				console.log(err + res.status);
+			}
 		},
-		toggleReminder(id) {
+
+		// PUT (Update)
+		async toggleReminder(id) {
+			const taskToToggle = await this.fetchCertainData(id);
+			const updatedTasks = {
+				...taskToToggle,
+				reminder: !taskToToggle.reminder,
+			};
+
+			const res = await fetch(`api/tasks/${id}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(updatedTasks),
+			});
+
+			const data = await res.json();
+
 			this.tasks = this.tasks.map((task) =>
-				task.id === id ? { ...task, reminder: !task.reminder } : task
+				task.id === id ? { ...task, reminder: data.reminder } : task
 			);
 		},
+
+		// GET
+		async fetchData() {
+			const data = await fetch("api/tasks").then((res) => res.json());
+			return data;
+		},
+
+		async fetchCertainData(id) {
+			const data = await fetch(`api/tasks/${id}`).then((res) => res.json());
+			return data;
+		},
 	},
-	created() {
-		this.tasks = [
-			{
-				id: 1,
-				text: "Doctors Appointment",
-				day: "March 1st at 2:30pm",
-				reminder: true,
-			},
-			{
-				id: 2,
-				text: "Meeting at School",
-				day: "March 3rd at 1:30pm",
-				reminder: true,
-			},
-			{
-				id: 3,
-				text: "Food Shopping",
-				day: "March 4th at 12:30pm",
-				reminder: false,
-			},
-			{
-				id: 4,
-				text: "School Homework",
-				day: "March 4th at 8:30pm",
-				reminder: true,
-			},
-		];
+
+	async created() {
+		this.tasks = await this.fetchData();
 	},
 };
 </script>
